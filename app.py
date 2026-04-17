@@ -18,7 +18,7 @@ def get_today_word():
     index = days_passed % len(words)
     return words[index]
 app = Flask(__name__)
-    import os
+import os
 client = OpenAI(
 api_key = os.getenv("OPENAI_API_KEY")
 )

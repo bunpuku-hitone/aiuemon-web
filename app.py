@@ -7,7 +7,8 @@ def load_words():
 words = load_words()
 import datetime
 def get_date_text():
-    today = datetime.date.today()
+    today = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+    today = today.date()
     return f"{today.year}年{today.month}月{today.day}日"
 
 BASE_DATE = datetime.date(2026, 1, 1)

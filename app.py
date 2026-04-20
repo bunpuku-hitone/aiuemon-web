@@ -19,6 +19,18 @@ def get_today_word():
     days_passed = (today - BASE_DATE).days
     index = days_passed % len(words)
     return words[index]
+
+def load_count():
+    try:
+        with open("counter.txt", "r") as f:
+            return int(f.read().strip())
+    except:
+        return 0
+
+def save_count(count):
+    with open("counter.txt", "w") as f:
+        f.write(str(count))
+
 app = Flask(__name__)
 import os
 client = OpenAI(
@@ -65,8 +77,10 @@ def index():
             except Exception as e:
                 reply = f"（接続エラー）\n{e}"
 
+    count = load_count()
     return render_template(
         "index.html",
+        count=count,
         reply=reply,
         date_text=get_date_text(),
         user_text=user_text,

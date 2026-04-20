@@ -14,7 +14,8 @@ def get_date_text():
 BASE_DATE = datetime.date(2026, 1, 1)
 
 def get_today_word():
-    today = datetime.date.today()
+    today = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+    today = today.date()
     days_passed = (today - BASE_DATE).days
     index = days_passed % len(words)
     return words[index]

@@ -166,7 +166,15 @@ return false;
 document.getElementById("word-btn").addEventListener("click", function() {
     var box = document.querySelector(".input-box");
     box.value = "";
+    box.placeholder = "ここに一言どうぞ";
     box.focus();
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
+    box.style.border = "2px solid #ff8888";
+    setTimeout(function(){ box.style.border = ""; }, 1500);
+    setTimeout(function(){ box.placeholder = ""; }, 1500);
+    var btn = document.getElementById("word-btn");
+    btn.textContent = "入力してください";
+    setTimeout(function(){ btn.textContent = "あなたの言葉"; }, 1500);
 });
 </script>
 </body>

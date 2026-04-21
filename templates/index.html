@@ -160,7 +160,7 @@ return false;
             <textarea name="user_text" class="input-box">{{ user_text }}</textarea>
         </form>
 
-<div id="replyBox" class="reply-box {% if not reply %}today-mode{% endif %}">{% if reply %}{{ reply }}{% else %}{{ today_word }}{% endif %}</div>
+<div id="replyBox" class="reply-box {% if not reply %}today-mode{% endif %}">{% if reply %}<strong>{{ reply }}</strong>{% else %}{{ today_word }}{% endif %}</div>            
     </div>
 <script>
 document.getElementById("word-btn").addEventListener("click", function() {

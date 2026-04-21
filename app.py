@@ -86,6 +86,15 @@ def index():
 
                 reply = response.output_text.strip()
 
+reply = response.output_text
+
+cur.execute(
+    "INSERT INTO entries (app_name, user_key, input_text, output_text) VALUES (%s, %s, %s, %s)",
+    ("aiuemon", "user1", user_text, reply)
+)
+conn.commit()
+
+                
                 if not reply:
                     reply = "（返答が空でした）"
 

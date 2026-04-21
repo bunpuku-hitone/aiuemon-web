@@ -66,7 +66,14 @@ def index():
         user_text = request.form.get("user_text", "").strip()
 
         if not user_text:
-            reply = ""
+            return render_template(
+                "index.html",
+                count=get_db_count(),
+                reply="",
+                date_text=get_date_text(),
+                user_text="",
+                today_word=today_word
+            )
         else:
             count = load_count()
             count += 1

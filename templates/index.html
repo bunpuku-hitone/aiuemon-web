@@ -148,14 +148,13 @@
         <div class="date-text">{{ date_text }}</div>
         <div class="title-text">言葉の贈り物</div>
 
-        <form method="POST" onsubmit="document.getElementById('replyBox').innerText='返答を待っています...';">
         <form method="POST" onsubmit="
 document.getElementById('replyBox').innerText='返答を待っています...';
 setTimeout(function(){ document.forms[0].submit(); }, 300);
 return false;
 ">
             <button type="button" id="word-btn" class="input-label">あなたの言葉</button>
-            <div class="version-text">バージョン β-03</div>
+            <div class="version-text">バージョン β-04</div>
             <button type="submit" class="enter-button">ENTER</button>   
             <textarea name="user_text" class="input-box">{{ user_text }}</textarea>
         </form>

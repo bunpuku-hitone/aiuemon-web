@@ -164,7 +164,9 @@ return false;
     </div>
 <script>
 document.getElementById("word-btn").addEventListener("click", function() {
-    document.querySelector(".input-box").focus();
+    var box = document.querySelector(".input-box");
+    box.value = "";
+    box.focus();
 });
 </script>
 </body>

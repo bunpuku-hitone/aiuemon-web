@@ -65,6 +65,7 @@ def index():
             count = load_count()
             count += 1
             save_count(count)
+            
             try:
                 response = client.responses.create(
                     model="gpt-4.1-mini",
@@ -83,20 +84,17 @@ def index():
                         }
                     ]
                 )
-                
-            reply = response.output_text
 
-            cur.execute(
-                "INSERT INTO entries (app_name, user_key, input_text, output_text) VALUES (%s, %s, %s, %s)",
-                ("aiuemon", "user1", user_text, reply)
-            )
-            conn.commit()
-
-                
                 reply = response.output_text.strip()
-                
+
                 if not reply:
                     reply = "（返答が空でした）"
+
+                cur.execute(
+                    "INSERT INTO entries (app_name, user_key, input_text, output_text) VALUES (%s, %s, %s, %s)",
+                    ("aiuemon", "user1", user_text, reply)
+                )
+                conn.commit()
 
             except Exception as e:
                 reply = f"（接続エラー）\n{e}"

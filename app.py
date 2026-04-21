@@ -96,9 +96,8 @@ def index():
                         }
                     ]
                 )
-                reply = response.output_text
-
-                reply = response.output_text.strip()
+                reply = response.output[0].content[0].text
+              #  reply = response.output_text.strip()
 
                 if not reply:
                     reply = "（返答が空でした）"

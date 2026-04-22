@@ -83,15 +83,12 @@ def index():
             count = load_count()
             count += 1
             save_count(count)
-            
-        # if is_english(user_text):
-            # system_prompt = "Respond in English with a gentle, short essay."
-            # reply = "Good morning. This is an English reply test."
-        if is_english(user_text):
-            system_prompt = "Respond ONLY in English. No Japanese."
-        else:
-            system_prompt = "日本語で、やさしく短いエッセイで返答してください。"
-    
+
+            if is_english(user_text):
+                system_prompt = "Respond ONLY in English. No Japanese."
+            else:
+                system_prompt = "日本語で、やさしく短いエッセイで返答してください。"
+
             try:
                 response = client.responses.create(
                     model="gpt-4.1-mini",

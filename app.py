@@ -55,6 +55,11 @@ client = OpenAI(
 api_key = os.getenv("OPENAI_API_KEY")
 )
 
+def get_db_count():
+    cur.execute("SELECT COUNT(*) FROM entries")
+    result = cur.fetchone()
+    return result[0] if result else 0
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     reply = ""
@@ -117,10 +122,7 @@ def index():
 
             except Exception as e:
                 reply = f"（接続エラー）\n{e}"
-    def get_db_count():
-        cur.execute("SELECT COUNT(*) FROM entries")
-        result = cur.fetchone()
-        return result[0] if result else 0
+
         
     count = get_db_count()
     return render_template(

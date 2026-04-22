@@ -85,7 +85,8 @@ def index():
             save_count(count)
             
         if is_english(user_text):
-            system_prompt = "Respond in English with a gentle, short essay."
+            reply = "Good morning. This is an English reply test."
+            # system_prompt = "Respond in English with a gentle, short essay."
         else:
             system_prompt = "日本語で、やさしく短いエッセイで返答してください。"
     

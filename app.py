@@ -75,6 +75,7 @@ def get_db_count():
 def index():
     reply = ""
     user_text = ""
+    tone = ""
     today_word = get_today_word()
 
 

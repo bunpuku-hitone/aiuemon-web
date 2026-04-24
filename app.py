@@ -97,6 +97,7 @@ def index():
                 user_text="",
                 today_word=today_word,
                 tone=tone,
+                enjoy_words=enjoy_words,
             )
         else:
             count = load_count()

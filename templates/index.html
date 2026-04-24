@@ -99,6 +99,16 @@
             padding: 2px 6px;
         }
 
+        #enjoy-btn {
+            position: absolute;
+            top: 150px;
+            left: 330px;
+            font-size: 12px;
+            padding: 2px 6px;
+            border: 1px solid black;
+            background: rgba(247, 242, 238, 0.75);
+        }
+        
         .enter-button {
             position: absolute;
             top: 215px;
@@ -172,6 +182,7 @@
         <div class="date-text">{{ date_text }}</div>
         <div class="title-text">言葉の贈り物</div>
         <button type="button" id="tone-btn" onclick="showTone()">言葉の味付け</button>
+        <button type="button" id="enjoy-btn">お楽しみ</button>
         
         <form method="POST" onsubmit="
 document.getElementById('replyBox').innerText='返答を待っています...';
@@ -182,7 +193,7 @@ return false;
                 <input type="text" name="tone" value="{{ tone }}" placeholder="味付け">
             </div>
             <button type="button" id="word-btn" class="input-label">あなたの言葉</button>
-            <div class="version-text">バージョン β-05</div>
+            <div class="version-text">バージョン β-06</div>
             <button type="submit" class="enter-button">ENTER</button>   
             <textarea name="user_text" class="input-box">{{ user_text }}</textarea>
         </form>
@@ -202,7 +213,24 @@ document.getElementById("word-btn").addEventListener("click", function() {
     var btn = document.getElementById("word-btn");
     btn.textContent = "入力してください";
     setTimeout(function(){ btn.textContent = "あなたの言葉"; }, 1500);
+});    
+
+document.getElementById("enjoy-btn").addEventListener("click", function() {
+    var words = [
+        "なんとなく笑ってしまった",
+        "今日ちょっといいことあった",
+        "コーヒーがやけに美味しい",
+        "空を見上げてみた",
+        "誰かにありがとうと言いたくなった"
+    ];
+
+    var box = document.querySelector(".input-box");
+    var random = words[Math.floor(Math.random() * words.length)];
+
+    box.value = random;
+    box.focus();
 });
+    
 </script>
     <script>
     function showTone() {

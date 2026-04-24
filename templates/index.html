@@ -217,14 +217,7 @@ document.getElementById("word-btn").addEventListener("click", function() {
 });    
 
 document.getElementById("enjoy-btn").addEventListener("click", function() {
-    var words = [
-        "なんとなく笑ってしまった",
-        "今日ちょっといいことあった",
-        "コーヒーがやけに美味しい",
-        "空を見上げてみた",
-        "誰かにありがとうと言いたくなった"
-    ];
-
+    var words = {{ enjoy_words|tojson }};
     var box = document.querySelector(".input-box");
     var random = words[Math.floor(Math.random() * words.length)];
 

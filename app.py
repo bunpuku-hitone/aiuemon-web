@@ -116,6 +116,8 @@ def index():
                 system_prompt = "Respond ONLY in English. No Japanese."
             else:
                 system_prompt = "日本語で、やさしく短いエッセイで返答してください。"
+            if mode == "aiemon":
+                system_prompt = "あい右衛門として会話調で返答する。"
 
             try:
                 response = client.responses.create(

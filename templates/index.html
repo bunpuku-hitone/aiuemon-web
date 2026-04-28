@@ -185,11 +185,12 @@
         <div style="position:absolute; top:120px; left:200px; font-size:12px;">
         {% if mode == "aiemon" %}あい右衛門と{% else %}言葉の贈りもの{% endif %}
         </div>
-        <button type="submit" id="tone-btn" name="toggle_mode" value="1" form="mainForm" onclick="showTone()">言葉の味付け</button>
-        <button type="submit" id="tone-btn" name="toggle_mode" value="1" form="mainForm" onclick="document.getElementById('toggleModeInput').value='1'; showTone();">言葉の味付け</button>
+        # <button type="submit" id="tone-btn" name="toggle_mode" value="1" form="mainForm" onclick="document.getElementById('toggleModeInput').value='1'; showTone();">言葉の味付け</button>
+        <button type="submit" id="tone-btn" form="mainForm" onclick="document.getElementById('toggleModeInput').value='1'; this.form.submit(); return false;">言葉の味付け</button>
         <button type="button" id="enjoy-btn">お楽しみ言葉</button>
         
         <form id="mainForm" method="POST" onsubmit="
+        document.getElementById('toggleModeInput').value='';
         document.getElementById('replyBox').innerText='返答を待っています...';
         setTimeout(function(){ document.forms[0].submit(); }, 300);
         return false;

@@ -59,7 +59,7 @@ def save_count(count):
 
 app = Flask(__name__)
 app.secret_key = "hitone_beta07"
-# mode = "gift"
+mode = "gift"
 import os
 client = OpenAI(
 api_key = os.getenv("OPENAI_API_KEY")

@@ -171,6 +171,7 @@ def index():
         today_word=today_word,
         tone=tone,
         enjoy_words=enjoy_words,
+        mode=mode,
     )
 
     return render_template(

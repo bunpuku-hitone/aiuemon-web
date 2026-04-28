@@ -173,18 +173,7 @@ def index():
         enjoy_words=enjoy_words,
         mode=mode,
     )
-
-    return render_template(
-        "index.html",
-        reply=reply,
-        today_word=today_word,
-        user_text=user_text,
-        tone=tone,
-        count=count,
-        date_text=date_text,
-        enjoy_words=enjoy_words
-    )
-    
+   
 @app.route("/toggle_mode", methods=["POST"])
 def toggle_mode():
     current = session.get("mode", "gift")

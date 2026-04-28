@@ -188,14 +188,7 @@
         <button type="button" id="tone-btn" onclick="document.getElementById('toggleModeInput').value='1'; document.getElementById('mainForm').submit(); return false;">言葉の味付け</button>
         <button type="button" id="enjoy-btn">お楽しみ言葉</button>
         
-        <form id="mainForm" method="POST" onsubmit="
-        document.getElementById('replyBox').innerText='返答を待っています...';
-        ">
-        document.getElementById('toggleModeInput').value='';
-        document.getElementById('replyBox').innerText='返答を待っています...';
-        setTimeout(function(){ document.forms[0].submit(); }, 300);
-        return false;
-        ">
+        <form id="mainForm" method="POST" onsubmit="document.getElementById('toggleModeInput').value=''; document.getElementById('replyBox').innerText='返答を待っています...';">
             <input type="hidden" name="toggle_mode" id="toggleModeInput" value="">
             <div id="toneArea" style="display:{{ 'block' if tone else 'none' }}; margin-top:8px;">
                 <input type="text" name="tone" value="{{ tone }}" placeholder="味付け">

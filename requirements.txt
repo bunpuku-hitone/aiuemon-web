@@ -1,0 +1,4 @@
+flask
+openai
+gunicorn
+psycopg2-binary

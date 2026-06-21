@@ -19,7 +19,7 @@
             width: 100%;
             max-width: 450px;
             min-height: 100vh;
-            background-image: url("/static/washi_bg.jpg");
+            background-image: url("{% if mode == 'aiemon' %}/static/washi_cream.png{% elif mode == 'concierge' %}/static/washi_youngleaf.png{% else %}/static/washi_bg.jpg{% endif %}");
             background-size: cover;
             background-position: center;
             overflow: hidden;
@@ -144,20 +144,39 @@
             top: 315px;
             left: 30px;
             width: 380px;
-            min-height: 0;
+            height: 350px;
+            overflow-y: auto;
             box-sizing: border-box;
             border: 1px solid #999;
             background: rgba(255, 255, 255, 0.85);
             padding: 12px;
-            font-size: 14px;
+            font-size: 16px;
             color: #222222;
             white-space: pre-wrap;
             line-height: 1.8;
+        }
+        @media screen and (min-width: 600px) {
+            .reply-box {
+                height: 660px;
+            }
+        }
+        @media screen and (min-width: 1200px) {
+            .reply-box {
+                height: 260px;
+                top: 315px;
+            }
         }
         .today-mode {
             font-size: 22px;
             font-weight: bold;
         }
+        .reply-text {
+            font-size: 16px;
+            font-weight: bold;
+            white-space: pre-wrap;       
+            line-height: 1.6;
+        }
+
         @media (max-width: 480px) {
             .phone-frame {
                 max-width: 100vw;
@@ -179,27 +198,39 @@
     <div class="phone-frame">
         <img src="/static/aiueo.png" alt="aiueo" class="ai-image">
         
-        <div class="count-text">ハッピー {{ count }} </div>
+        <div class="count-text">
+          ハッピー <span id="happyCount">{{ count }}</span>
+        </div>
         <div class="date-text">{{ date_text }}</div>
-        <div class="title-text">言葉の贈り物</div>
+        <div class="title-text">
+            {{ "あい右衛門と" if mode == "aiemon" else "コンセルジュ" if mode == "concierge" else "言葉の贈り物" }}
+        </div>
 
-        <button type="button" id="tone-btn" onclick="toggleMode()">言葉の味付け</button>
+        <button type="button" id="tone-btn" onclick="toggleMode()">モード切替</button>
         <button type="button" id="enjoy-btn">お楽しみ言葉</button>
         
-        <form id="mainForm" method="POST" onsubmit="document.getElementById('toggleModeInput').value=''; document.getElementById('replyBox').innerText='返答を待っています...';">
+        <form id="mainForm" onsubmit="return false;">
             <div id="toneArea" style="display:{{ 'block' if tone else 'none' }}; margin-top:8px;">
                 <input type="text" name="tone" value="{{ tone }}" placeholder="味付け">
             </div>
             <button type="button" id="word-btn" class="input-label">あなたの言葉</button>
-            <div class="version-text">バージョン β-07</div>
-            <button type="button" class="enter-button" onclick="document.getElementById('replyBox').innerText='返答を待っています...'; document.getElementById('mainForm').submit();">ENTER</button>
-            <textarea name="user_text" class="input-box">{{ user_text or 'こんにちは' }}</textarea>
+            <div class="version-text">バージョン β-11</div>
+            <button type="button" class="enter-button" onclick="sendText()">ENTER</button>
+            <textarea name="user_text" class="input-box">こんにちは</textarea>
         </form>
 
-<div id="replyBox" class="reply-box {% if not reply %}today-mode{% endif %}">{% if reply %}<strong>{{ reply }}</strong>{% else %}{{ today_word }}{% endif %}</div>            
+<div id="replyBox" class="reply-box">
+{% if reply %}
+<span class="reply-text">{{ reply }}</span>
+{% else %}
+<span class="today-mode">{{ today_word }}</span>
+{% endif %}
+</div>
     </div>
 <script>
 document.getElementById("word-btn").addEventListener("click", function() {
+    document.getElementById("replyBox").innerText = "";
+    
     var box = document.querySelector(".input-box");
     box.value = "";
     box.placeholder = "ここに一言どうぞ";
@@ -214,7 +245,7 @@ document.getElementById("word-btn").addEventListener("click", function() {
 });    
 
 document.getElementById("enjoy-btn").addEventListener("click", function() {
-    var words = {{ enjoy_words|tojson }};
+    var words = {{ enjoy_words|tojson|safe }};
     var box = document.querySelector(".input-box");
     var random = words[Math.floor(Math.random() * words.length)];
 
@@ -236,5 +267,40 @@ document.getElementById("enjoy-btn").addEventListener("click", function() {
         });
     }
 </script>
+
+<script>
+function updateTitle(mode) {
+    const title = document.getElementById("title-text");
+
+    if (mode === "aiemon") {
+        title.textContent = "あい右衛門と";
+    } else if (mode === "concierge") {
+        title.textContent = "コンセルジュ";
+    } else {
+        title.textContent = "言葉の贈り物";
+    }
+}
+</script>
+
+<script>
+function sendText() {
+    const text = document.querySelector(".input-box").value;
+
+    document.getElementById("replyBox").innerHTML = "<span style='font-size:12px;color:#666;'>返答を待っています...</span>";
+
+    fetch("/send", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ user_text: text })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("replyBox").innerText = data.reply;
+        document.getElementById("happyCount").innerText = data.count;
+    });
+}
+</script>
+
 </body>
-</html>

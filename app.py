@@ -191,8 +191,9 @@ def add_catalog_cors_headers(response):
 @app.route("/catalog/click", methods=["POST"])
 def catalog_click():
     data = request.get_json(silent=True) or {}
+    book_value = data.get("book_no") if request.is_json else request.form.get("book_no")
     try:
-        book_no = int(data.get("book_no"))
+        book_no = int(book_value)
     except (TypeError, ValueError):
         return jsonify({"ok": False, "error": "invalid book number"}), 400
 

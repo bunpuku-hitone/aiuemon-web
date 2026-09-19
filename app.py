@@ -2,6 +2,8 @@ from flask import Flask, render_template, session, redirect, url_for
 from flask import request, jsonify
 from datetime import datetime, timedelta
 import os
+import hashlib
+import hmac
 import psycopg2
 DATABASE_URL = os.getenv("DATABASE_URL")
 def get_db_connection():
@@ -172,5 +174,74 @@ def send():
         "count": get_db_count()
     })
     
+
+CATALOG_ORIGIN = "https://bunpuku-hitone.github.io"
+CATALOG_PIN_HASH = "c5b389beb081fe1e43ae92e895deca086b4eed5cf9efc7b78eebbbc9dc75c3f0"
+CATALOG_APP_NAME = "hitone_books_digest"
+
+@app.after_request
+def add_catalog_cors_headers(response):
+    if request.path.startswith("/catalog/") and request.headers.get("Origin") == CATALOG_ORIGIN:
+        response.headers["Access-Control-Allow-Origin"] = CATALOG_ORIGIN
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        response.headers["Vary"] = "Origin"
+    return response
+
+@app.route("/catalog/click", methods=["POST"])
+def catalog_click():
+    data = request.get_json(silent=True) or {}
+    try:
+        book_no = int(data.get("book_no"))
+    except (TypeError, ValueError):
+        return jsonify({"ok": False, "error": "invalid book number"}), 400
+
+    if book_no < 1 or book_no > 10:
+        return jsonify({"ok": False, "error": "invalid book number"}), 400
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO entries (app_name, user_key, input_text, output_text) VALUES (%s, %s, %s, %s)",
+            (CATALOG_APP_NAME, f"book{book_no}", "click", "")
+        )
+        conn.commit()
+        return jsonify({"ok": True})
+    except Exception as e:
+        print("catalog_click error:", e)
+        return jsonify({"ok": False, "error": "database error"}), 500
+    finally:
+        cur.close()
+        conn.close()
+
+@app.route("/catalog/stats", methods=["POST"])
+def catalog_stats():
+    data = request.get_json(silent=True) or {}
+    pin = str(data.get("pin", ""))
+    pin_hash = hashlib.sha256(pin.encode("utf-8")).hexdigest()
+    if not hmac.compare_digest(pin_hash, CATALOG_PIN_HASH):
+        return jsonify({"ok": False, "error": "unauthorized"}), 401
+
+    counts = {f"book{i}": 0 for i in range(1, 11)}
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "SELECT user_key, COUNT(*) FROM entries "
+            "WHERE app_name = %s AND input_text = %s GROUP BY user_key",
+            (CATALOG_APP_NAME, "click")
+        )
+        for user_key, count in cur.fetchall():
+            if user_key in counts:
+                counts[user_key] = count
+        return jsonify({"ok": True, "counts": counts})
+    except Exception as e:
+        print("catalog_stats error:", e)
+        return jsonify({"ok": False, "error": "database error"}), 500
+    finally:
+        cur.close()
+        conn.close()
+
 if __name__ == "__main__":
     app.run(debug=True)

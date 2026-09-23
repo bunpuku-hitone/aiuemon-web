@@ -192,20 +192,23 @@ def add_catalog_cors_headers(response):
 def catalog_click():
     data = request.get_json(silent=True) or {}
     book_value = data.get("book_no") if request.is_json else request.form.get("book_no")
-    try:
-        book_no = int(book_value)
-    except (TypeError, ValueError):
-        return jsonify({"ok": False, "error": "invalid book number"}), 400
-
-    if book_no < 1 or book_no > 10:
-        return jsonify({"ok": False, "error": "invalid book number"}), 400
+    if book_value == "present1":
+        item_key = "present1"
+    else:
+        try:
+            book_no = int(book_value)
+        except (TypeError, ValueError):
+            return jsonify({"ok": False, "error": "invalid book number"}), 400
+        if book_no < 1 or book_no > 10:
+            return jsonify({"ok": False, "error": "invalid book number"}), 400
+        item_key = f"book{book_no}"
 
     conn = get_db_connection()
     cur = conn.cursor()
     try:
         cur.execute(
             "INSERT INTO entries (app_name, user_key, input_text, output_text) VALUES (%s, %s, %s, %s)",
-            (CATALOG_APP_NAME, f"book{book_no}", "click", "")
+            (CATALOG_APP_NAME, item_key, "click", "")
         )
         conn.commit()
         return jsonify({"ok": True})
@@ -225,6 +228,7 @@ def catalog_stats():
         return jsonify({"ok": False, "error": "unauthorized"}), 401
 
     counts = {f"book{i}": 0 for i in range(1, 11)}
+    counts["present1"] = 0
     conn = get_db_connection()
     cur = conn.cursor()
     try:

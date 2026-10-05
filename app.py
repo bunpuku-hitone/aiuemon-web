@@ -192,14 +192,14 @@ def add_catalog_cors_headers(response):
 def catalog_click():
     data = request.get_json(silent=True) or {}
     book_value = data.get("book_no") if request.is_json else request.form.get("book_no")
-    if book_value == "present1":
-        item_key = "present1"
+    if book_value in ("present1", "present2"):
+        item_key = book_value
     else:
         try:
             book_no = int(book_value)
         except (TypeError, ValueError):
             return jsonify({"ok": False, "error": "invalid book number"}), 400
-        if book_no < 1 or book_no > 10:
+        if book_no < 1 or book_no > 12:
             return jsonify({"ok": False, "error": "invalid book number"}), 400
         item_key = f"book{book_no}"
 
@@ -227,8 +227,9 @@ def catalog_stats():
     if not hmac.compare_digest(pin_hash, CATALOG_PIN_HASH):
         return jsonify({"ok": False, "error": "unauthorized"}), 401
 
-    counts = {f"book{i}": 0 for i in range(1, 11)}
+    counts = {f"book{i}": 0 for i in range(1, 13)}
     counts["present1"] = 0
+    counts["present2"] = 0
     conn = get_db_connection()
     cur = conn.cursor()
     try:
